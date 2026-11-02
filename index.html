@@ -1380,8 +1380,15 @@ footer p {
 </footer>
 
 <script>
+// Shared sync configuration (JSONBin.io)
+// Replace with your own bin if you want isolated data
+const SHARED_BIN_ID = '69079f7043b1c97be9cc3e8d';
+const SHARED_BIN_KEY = '$2a$10$Jm8Y5hPqRzXvTnKcLwUeOaFbDiGsHjYtNkQrAvBxCdEfGhIjKlMnOp';
+const SHARED_BIN_URL_GET = `https://api.jsonbin.io/v3/b/${SHARED_BIN_ID}/latest`;
+const SHARED_BIN_URL_PUT = `https://api.jsonbin.io/v3/b/${SHARED_BIN_ID}`;
+
 // Medicine Data
-const MEDICINES = [
+let MEDICINES = [
   {id:1, category:'Pain Relievers', name:'Biogesic Tab', generic:'Paracetamol', strength:'500 mg', form:'Tablet', price:5.00, status:'In Stock', batch:'BGS-2024-0891', expiry:'11/2030', image:'biogesic.jpg'},
   {id:2, category:'Pain Relievers', name:'Medicol 200', generic:'Ibuprofen', strength:'200 mg', form:'Softgel', price:7.00, status:'Low Stock', batch:'MED-200-5412', expiry:'03/2030', image:'medicol.jpg'},
   {id:3, category:'Pain Relievers', name:'Medicol 400', generic:'Ibuprofen', strength:'400 mg', form:'Softgel', price:11.50, status:'In Stock', batch:'MED-400-8821', expiry:'08/2030', image:'medicol 400.jpg'},
@@ -1411,12 +1418,86 @@ const MEDICINES = [
   {id:27, category:'Vitamins', name:'Lactezin', generic:'Lactoferrin + Vitamin E + Zinc', strength:'100 mg/11 IU/5 mg', form:'Capsule', price:28.00, status:'In Stock', batch:'LCT-100-9432', expiry:'03/2030', image:'lactezin.jpg'}
 ];
 
-let cart = JSON.parse(localStorage.getItem('pharmaCart') || '[]');
-let currentUser = JSON.parse(localStorage.getItem('pharmaUser') || 'null');
-let users = JSON.parse(localStorage.getItem('pharmaUsers') || '[]');
-let orders = JSON.parse(localStorage.getItem('pharmaOrders') || '[]');
-let requests = JSON.parse(localStorage.getItem('pharmaRequests') || '[]');
-let anteQuestions = JSON.parse(localStorage.getItem('pharmaAnteQuestions') || '[]');
+// Shared data
+let cart = [];
+let currentUser = null;
+let users = [];
+let orders = [];
+let requests = [];
+let anteQuestions = [];
+
+// Load from localStorage first, then sync with shared store
+try {
+  cart = JSON.parse(localStorage.getItem('pharmaCart') || '[]');
+  currentUser = JSON.parse(localStorage.getItem('pharmaUser') || 'null');
+  users = JSON.parse(localStorage.getItem('pharmaUsers') || '[]');
+  orders = JSON.parse(localStorage.getItem('pharmaOrders') || '[]');
+  requests = JSON.parse(localStorage.getItem('pharmaRequests') || '[]');
+  anteQuestions = JSON.parse(localStorage.getItem('pharmaAnteQuestions') || '[]');
+} catch(e) {}
+
+// Sync helpers
+async function loadSharedData() {
+  try {
+    const res = await fetch(SHARED_BIN_URL_GET, {
+      headers: {
+        'X-Master-Key': SHARED_BIN_KEY,
+        'X-Bin-Meta': 'false'
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === 'object') {
+        if (Array.isArray(data.users)) users = data.users;
+        if (Array.isArray(data.orders)) orders = data.orders;
+        if (Array.isArray(data.requests)) requests = data.requests;
+        if (Array.isArray(data.anteQuestions)) anteQuestions = data.anteQuestions;
+        if (Array.isArray(data.medicines)) MEDICINES = data.medicines;
+        // Save to localStorage as cache
+        localStorage.setItem('pharmaUsers', JSON.stringify(users));
+        localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+        localStorage.setItem('pharmaRequests', JSON.stringify(requests));
+        localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+        // Refresh views if they are open
+        const current = document.querySelector('.view:not([hidden])');
+        if (current) {
+          if (current.id === 'customerDashboard') renderCustomerDashboard();
+          if (current.id === 'adminDashboard') renderAdminDashboard();
+          if (current.id === 'medicines') renderMedicines();
+        }
+      }
+    }
+  } catch(e) {
+    // Silently fail - use local data
+  }
+}
+
+async function saveSharedData() {
+  try {
+    const payload = {
+      users,
+      orders,
+      requests,
+      anteQuestions,
+      medicines: MEDICINES,
+      updatedAt: new Date().toISOString()
+    };
+    await fetch(SHARED_BIN_URL_PUT, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': SHARED_BIN_KEY
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    // Silently fail
+  }
+}
+
+// Load shared data on startup and poll periodically
+loadSharedData();
+setInterval(loadSharedData, 30000); // Sync every 30 seconds
 
 const adminEmails = ['samantha_caermare@sjp2cd.edu.ph', 'elle_cadorna@sjp2cd.edu.ph', 'angela_lariwan@sjp2cd.edu.ph'];
 const adminPassword = 'PHARMASEE2026';
@@ -1559,6 +1640,7 @@ document.getElementById('signupForm').onsubmit = (e) => {
   const user = { id: Date.now(), name, email, mobile, password, role: 'customer' };
   users.push(user);
   localStorage.setItem('pharmaUsers', JSON.stringify(users));
+  saveSharedData();
   
   document.getElementById('signupOk').textContent = 'Account created successfully! You can now log in.';
   setTimeout(() => {
@@ -1897,6 +1979,7 @@ function confirmBuy() {
   });
   
   localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+  saveSharedData();
   cart = [];
   localStorage.setItem('pharmaCart', JSON.stringify(cart));
   updateCartBadge();
@@ -1958,6 +2041,7 @@ function confirmReserve() {
   });
   
   localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+  saveSharedData();
   cart = [];
   localStorage.setItem('pharmaCart', JSON.stringify(cart));
   updateCartBadge();
@@ -2061,6 +2145,7 @@ document.getElementById('requestForm').onsubmit = (e) => {
     status: 'Pending'
   });
   localStorage.setItem('pharmaRequests', JSON.stringify(requests));
+  saveSharedData();
   
   document.getElementById('reqOk').textContent = 'Request submitted successfully!';
   document.getElementById('requestForm').reset();
@@ -2205,7 +2290,8 @@ document.getElementById('addMedicineForm').onsubmit = (e) => {
     image
   });
   
-  document.getElementById('addMedicineForm').reset();
+  localStorage.setItem('pharmaMeds', JSON.stringify(MEDICINES));
+  saveSharedData();
   renderAdminDashboard();
   renderMedicines();
   alert('Medicine added successfully');
@@ -2214,6 +2300,8 @@ document.getElementById('addMedicineForm').onsubmit = (e) => {
 function removeMedicine(idx) {
   if (confirm('Are you sure you want to remove this medicine?')) {
     MEDICINES.splice(idx, 1);
+    localStorage.setItem('pharmaMeds', JSON.stringify(MEDICINES));
+    saveSharedData();
     renderAdminDashboard();
     renderMedicines();
   }
@@ -2222,6 +2310,7 @@ function removeMedicine(idx) {
 function updateOrderStatus(idx, status) {
   orders[idx].status = status;
   localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+  saveSharedData();
   renderAdminDashboard();
 }
 
@@ -2305,6 +2394,7 @@ function processAnteQuery(query) {
   const q = query.toLowerCase();
   anteQuestions.push(query);
   localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+  saveSharedData();
   
   // Check for emergency
   if (q.includes('emergency') || q.includes('chest pain') || q.includes("can't breathe") || q.includes('overdose')) {
@@ -2317,6 +2407,7 @@ function processAnteQuery(query) {
       addChatMessage('ante', "I cannot give medical advice or dosing information. I can help with stock, prices, and store info. Please consult a pharmacist for medical questions.");
       anteQuestions.push('[MEDICAL ADVICE BLOCKED] ' + query);
       localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+      saveSharedData();
     }, 500);
     return;
   }
