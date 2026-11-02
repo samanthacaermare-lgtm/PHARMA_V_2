@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+<meta name="theme-color" content="#326ed6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>PHARMA-SEE | See it. Reserve it. Pick it up.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -770,41 +773,77 @@ footer p {
 }
 
 @media (max-width: 640px) {
+  html {
+    font-size:15px;
+  }
+  
   header {
     padding:0.5rem;
+    gap:0.4rem;
+  }
+  
+  .brand {
+    gap:0.4rem;
+  }
+  
+  .brand img {
+    height:40px;
+    width:40px;
+  }
+  
+  .brand-text span {
+    font-size:0.95rem;
   }
   
   .brand small {
     display:none;
   }
   
+  .header-actions {
+    gap:0.3rem;
+  }
+  
   .header-btn {
-    font-size:0.85rem;
-    padding:0 0.7rem;
+    font-size:0.8rem;
+    padding:0 0.6rem;
+    min-height:40px;
   }
   
   main {
-    padding:1rem 0.75rem 7rem;
+    padding:0.75rem 0.5rem 7rem;
+  }
+  
+  .card {
+    padding:0.75rem;
+    border-radius:12px;
   }
   
   .grid {
     grid-template-columns:1fr;
+    gap:0.75rem;
   }
   
   .form-grid {
     grid-template-columns:1fr;
+    gap:0;
   }
   
   .landing {
-    padding:1.25rem;
+    padding:1rem;
+    min-height:50vh;
+    border-radius:16px;
+  }
+  
+  .landing::before {
+    border-radius:16px;
   }
   
   .landing h1 {
-    font-size:2.2rem;
+    font-size:2rem;
   }
   
   .landing p {
-    font-size:1.1rem;
+    font-size:1rem;
   }
   
   .landing-actions {
@@ -817,31 +856,38 @@ footer p {
   }
   
   #anteChat {
-    right:0.5rem;
-    left:0.5rem;
+    right:0.25rem;
+    left:0.25rem;
     width:auto;
-    bottom:4.5rem;
+    bottom:4rem;
+    max-height:60vh;
   }
   
   #anteBtn {
-    right:0.5rem;
-    bottom:0.5rem;
-    font-size:0.9rem;
-    padding:0.7rem 1.2rem;
+    right:0.25rem;
+    bottom:0.25rem;
+    font-size:0.85rem;
+    padding:0.6rem 1rem;
+    min-height:40px;
   }
   
   dialog {
-    padding:1.25rem;
-    width:95%;
+    padding:1rem;
+    width:98%;
+    max-height:90vh;
+    overflow-y:auto;
   }
   
   .cart-item {
-    grid-template-columns:50px 1fr;
-    gap:0.4rem;
+    grid-template-columns:45px 1fr;
+    gap:0.3rem;
+    padding:0.5rem 0;
   }
   
   .cart-item img {
     grid-row:1 / 3;
+    width:45px;
+    height:45px;
   }
   
   .qty-controls {
@@ -849,16 +895,95 @@ footer p {
     justify-self:start;
   }
   
+  .qty-btn, .remove-btn {
+    width:32px;
+    height:32px;
+    min-height:32px;
+    font-size:0.9rem;
+  }
+  
   .remove-btn {
     grid-column:2;
     justify-self:end;
     grid-row:2;
   }
+  
+  table {
+    min-width:400px;
+    font-size:0.875rem;
+  }
+  
+  th, td {
+    padding:0.4rem;
+  }
+  
+  td img {
+    width:40px;
+    height:40px;
+  }
+  
+  .metrics {
+    grid-template-columns:1fr 1fr;
+  }
+  
+  .metric-card {
+    padding:1rem 0.5rem;
+  }
+  
+  .metric-card b {
+    font-size:2rem;
+  }
+  
+  h1 {
+    font-size:1.8rem;
+  }
+  
+  h2 {
+    font-size:1.4rem;
+  }
+  
+  .btn {
+    font-size:0.9rem;
+    padding:0.5rem 1.2rem;
+    min-height:42px;
+  }
+  
+  input, select, textarea {
+    font-size:16px; /* Prevent zoom on iOS */
+    min-height:42px;
+  }
 }
 
-@media (min-width: 1024px) {
-  .grid.medicine-grid {
-    grid-template-columns:repeat(4, 1fr);
+@media (max-width: 480px) {
+  .metrics {
+    grid-template-columns:1fr;
+  }
+  
+  .header-actions {
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    width:100%;
+    order:3;
+    padding-bottom:0.2rem;
+  }
+  
+  header {
+    flex-wrap:nowrap;
+  }
+  
+  .brand {
+    flex:1;
+    min-width:0;
+  }
+  
+  .brand-text {
+    min-width:0;
+  }
+  
+  .brand-text span {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
   }
 }
 </style>
@@ -1436,35 +1561,77 @@ try {
   anteQuestions = JSON.parse(localStorage.getItem('pharmaAnteQuestions') || '[]');
 } catch(e) {}
 
-// Sync helpers
+// Sync helpers - merge to avoid data loss on concurrent edits
+function mergeArraysById(localArr, remoteArr) {
+  if (!Array.isArray(remoteArr)) return localArr || [];
+  const local = Array.isArray(localArr) ? localArr : [];
+  const merged = new Map();
+  // Add local items first
+  local.forEach(item => {
+    if (item && (item.id !== undefined || item.email)) {
+      const key = item.id !== undefined ? item.id : item.email;
+      merged.set(key, item);
+    } else {
+      merged.set(Symbol(), item);
+    }
+  });
+  // Merge remote items (remote takes precedence for existing keys)
+  remoteArr.forEach(item => {
+    if (item && (item.id !== undefined || item.email)) {
+      const key = item.id !== undefined ? item.id : item.email;
+      merged.set(key, item);
+    } else {
+      merged.set(Symbol(), item);
+    }
+  });
+  return Array.from(merged.values());
+}
+
 async function loadSharedData() {
   try {
     const res = await fetch(SHARED_BIN_URL_GET, {
       headers: {
         'X-Master-Key': SHARED_BIN_KEY,
-        'X-Bin-Meta': 'false'
-      }
+        'X-Bin-Meta': 'false',
+        'cache-control': 'no-cache'
+      },
+      cache: 'no-store'
     });
     if (res.ok) {
       const data = await res.json();
       if (data && typeof data === 'object') {
-        if (Array.isArray(data.users)) users = data.users;
-        if (Array.isArray(data.orders)) orders = data.orders;
-        if (Array.isArray(data.requests)) requests = data.requests;
-        if (Array.isArray(data.anteQuestions)) anteQuestions = data.anteQuestions;
-        if (Array.isArray(data.medicines)) MEDICINES = data.medicines;
-        // Save to localStorage as cache
+        const remote = data.record || data;
+        // Merge arrays to handle concurrent edits
+        if (Array.isArray(remote.users)) users = mergeArraysById(users, remote.users);
+        if (Array.isArray(remote.orders)) orders = mergeArraysById(orders, remote.orders);
+        if (Array.isArray(remote.requests)) requests = mergeArraysById(requests, remote.requests);
+        if (Array.isArray(remote.anteQuestions)) {
+          // For questions, just combine unique ones
+          const allQ = [...new Set([...(Array.isArray(anteQuestions) ? anteQuestions : []), ...remote.anteQuestions])];
+          anteQuestions = allQ;
+        }
+        if (Array.isArray(remote.medicines)) {
+          // For medicines, merge by id
+          const medMap = new Map();
+          (Array.isArray(MEDICINES) ? MEDICINES : []).forEach(m => medMap.set(m.id, m));
+          remote.medicines.forEach(m => medMap.set(m.id, m));
+          MEDICINES = Array.from(medMap.values());
+        }
+        // Save merged data to localStorage as cache
         localStorage.setItem('pharmaUsers', JSON.stringify(users));
         localStorage.setItem('pharmaOrders', JSON.stringify(orders));
         localStorage.setItem('pharmaRequests', JSON.stringify(requests));
         localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+        localStorage.setItem('pharmaMeds', JSON.stringify(MEDICINES));
         // Refresh views if they are open
         const current = document.querySelector('.view:not([hidden])');
         if (current) {
           if (current.id === 'customerDashboard') renderCustomerDashboard();
           if (current.id === 'adminDashboard') renderAdminDashboard();
           if (current.id === 'medicines') renderMedicines();
+          if (current.id === 'cartPage') renderCartPage();
         }
+        updateCartBadge();
       }
     }
   } catch(e) {
@@ -1474,6 +1641,13 @@ async function loadSharedData() {
 
 async function saveSharedData() {
   try {
+    // Save current state to localStorage first
+    localStorage.setItem('pharmaUsers', JSON.stringify(users));
+    localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+    localStorage.setItem('pharmaRequests', JSON.stringify(requests));
+    localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+    localStorage.setItem('pharmaMeds', JSON.stringify(MEDICINES));
+    
     const payload = {
       users,
       orders,
@@ -1495,9 +1669,17 @@ async function saveSharedData() {
   }
 }
 
-// Load shared data on startup and poll periodically
+// Load shared data on startup and poll periodically (faster for better sync)
 loadSharedData();
-setInterval(loadSharedData, 30000); // Sync every 30 seconds
+setInterval(loadSharedData, 10000); // Sync every 10 seconds for better multi-device sync
+
+// Also sync on visibility change and focus
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    loadSharedData();
+  }
+});
+window.addEventListener('focus', loadSharedData);
 
 const adminEmails = ['samantha_caermare@sjp2cd.edu.ph', 'elle_cadorna@sjp2cd.edu.ph', 'angela_lariwan@sjp2cd.edu.ph'];
 const adminPassword = 'PHARMASEE2026';
