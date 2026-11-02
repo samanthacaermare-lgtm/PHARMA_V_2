@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PHARMA-SEE | See it. Reserve it. Pick it up.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1E293B;
+  --brand:#326ed6;
+  --sage:#1981dc;
+  --amber:#FFB74D;
+  --card:#ffffff;
+  --line:#cfe3ee;
+  --muted:#475569;
+  --on:#ffffff;
+  --bg:linear-gradient(160deg,#aed8f7 0%,#cde8fb 50%,#e6f4fd 100%);
+  --success:#1b6e2f;
+  --danger:#b3261e;
+}
+
+[data-theme=dark] {
+  --ink:#E6EDF0;
+  --brand:#1685ed;
+  --sage:#22c55e;
+  --amber:#f59e0b;
+  --card:#1E1E1E;
+  --line:#33403f;
+  --muted:#aab6b9;
+  --on:#121212;
+  --bg:linear-gradient(160deg,#0f172a 0%,#1e293b 50%,#334155 100%);
+  --success:#22c55e;
+  --danger:#ff6b6b;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+html {
+  font-size:16px;
+}
+
+body {
+  margin:0;
+  font:1rem/1.6 "Atkinson Hyperlegible",system-ui,sans-serif;
+  color:var(--ink);
+  background:var(--bg) fixed;
+  min-height:100vh;
+  -webkit-text-size-adjust:100%;
+}
+
+a {
+  color:var(--brand);
+}
+
+:focus-visible {
+  outline:3px solid var(--amber);
+  outline-offset:2px;
+}
+
+img {
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+/* Header */
+header {
+  position:sticky;
+  top:0;
+  z-index:40;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:0.75rem;
+  padding:0.6rem 1rem;
+  flex-wrap:wrap;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  text-decoration:none;
+  color:var(--ink);
+  font-weight:700;
+  min-height:44px;
+}
+
+.brand img {
+  height:46px;
+  width:46px;
+  border-radius:50%;
+  background:#fff;
+  object-fit:cover;
+}
+
+.brand-text {
+  display:flex;
+  flex-direction:column;
+}
+
+.brand small {
+  font-weight:400;
+  color:var(--muted);
+  font-size:0.8rem;
+}
+
+.header-actions {
+  margin-left:auto;
+  display:flex;
+  gap:0.5rem;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.header-btn {
+  background:var(--card);
+  color:var(--ink);
+  border:2px solid var(--line);
+  border-radius:999px;
+  min-width:44px;
+  min-height:44px;
+  padding:0 1rem;
+  font:inherit;
+  font-size:0.9rem;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0.3rem;
+}
+
+.header-btn:hover {
+  background:var(--brand);
+  color:var(--on);
+  border-color:var(--brand);
+}
+
+#cartBadge {
+  background:var(--amber);
+  color:#1E293B;
+  border-radius:999px;
+  font-size:0.75rem;
+  font-weight:700;
+  min-width:22px;
+  padding:0 5px;
+  text-align:center;
+}
+
+#menuBtn {
+  display:none;
+  background:var(--card);
+  color:var(--ink);
+  border:2px solid var(--line);
+  border-radius:999px;
+  min-width:44px;
+  min-height:44px;
+  font-size:1.2rem;
+  cursor:pointer;
+}
+
+nav {
+  width:100%;
+}
+
+nav ul {
+  display:flex;
+  gap:0.25rem;
+  list-style:none;
+  margin:0;
+  padding:0;
+  flex-wrap:wrap;
+}
+
+nav a {
+  display:flex;
+  align-items:center;
+  padding:0.5rem 0.9rem;
+  border-radius:999px;
+  text-decoration:none;
+  color:var(--ink);
+  font-size:0.95rem;
+  min-height:44px;
+}
+
+nav a.active,
+nav a:hover {
+  background:var(--brand);
+  color:var(--on);
+}
+
+/* Main */
+main {
+  max-width:1200px;
+  margin:0 auto;
+  padding:1.5rem 1rem 8rem;
+}
+
+.view[hidden] {
+  display:none !important;
+}
+
+.view h1 {
+  font-size:clamp(1.8rem, 5vw, 3rem);
+  line-height:1.15;
+  margin:0.5rem 0 1rem;
+}
+
+.view h2 {
+  margin:2rem 0 1rem;
+  font-size:clamp(1.4rem, 4vw, 2rem);
+}
+
+.card {
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:1rem;
+  box-shadow:0 6px 18px rgba(30,41,59,0.08);
+  margin-bottom:1rem;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));
+  gap:1rem;
+}
+
+.btn {
+  background:var(--brand);
+  color:var(--on);
+  border:2px solid var(--brand);
+  border-radius:999px;
+  padding:0.6rem 1.4rem;
+  font:inherit;
+  font-weight:700;
+  font-size:0.95rem;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  gap:0.4rem;
+}
+
+.btn.alt {
+  background:transparent;
+  color:var(--brand);
+}
+
+.btn:disabled {
+  opacity:0.5;
+  cursor:not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+  filter:brightness(1.08);
+}
+
+.row {
+  display:flex;
+  gap:0.6rem;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+label {
+  display:block;
+  font-weight:700;
+  margin:0.7rem 0 0.3rem;
+  font-size:0.95rem;
+}
+
+input, select, textarea {
+  font:inherit;
+  font-size:16px;
+  width:100%;
+  padding:0.6rem 0.75rem;
+  border:2px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--ink);
+  min-height:44px;
+}
+
+textarea {
+  resize:vertical;
+  min-height:100px;
+}
+
+.form-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+  gap:0 1rem;
+}
+
+.err {
+  color:var(--danger);
+  font-weight:700;
+}
+
+.ok {
+  color:var(--success);
+  font-weight:700;
+}
+
+.muted {
+  color:var(--muted);
+  font-size:0.9rem;
+}
+
+.badge {
+  display:inline-block;
+  border-radius:999px;
+  padding:0.15rem 0.8rem;
+  font-size:0.85rem;
+  font-weight:700;
+  color:#1E293B;
+}
+
+.badge.In { background:var(--sage); }
+.badge.Low { background:var(--amber); }
+.badge.Out { background:#ffcdd2; }
+
+.price {
+  font-size:1.4rem;
+  font-weight:700;
+  color:var(--brand);
+}
+
+.pimg {
+  width:100%;
+  aspect-ratio:1;
+  object-fit:contain;
+  background:#f1f8fd;
+  border-radius:12px;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:600px;
+}
+
+.table-wrap {
+  overflow-x:auto;
+}
+
+th, td {
+  padding:0.6rem;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  vertical-align:middle;
+}
+
+td img {
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  border-radius:8px;
+  background:#f1f8fd;
+}
+
+.metrics {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:1rem;
+}
+
+.metric-card {
+  text-align:center;
+  padding:1.5rem 1rem;
+}
+
+.metric-card b {
+  font-size:2.5rem;
+  color:var(--brand);
+  display:block;
+  line-height:1.2;
+}
+
+/* Landing Page */
+.landing {
+  position:relative;
+  min-height:calc(100vh - 200px);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  padding:2rem;
+  background:url('landing page image/Black and Ivory Modern Name YouTube Channel Art.png') center/cover no-repeat;
+  border-radius:24px;
+  margin-bottom:2rem;
+  color:#fff;
+}
+
+.landing::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(30,41,59,0.8) 0%, rgba(30,41,59,0.4) 100%);
+  border-radius:24px;
+}
+
+.landing > * {
+  position:relative;
+  z-index:1;
+  max-width:600px;
+}
+
+.landing h1 {
+  font-size:clamp(2.5rem, 6vw, 4rem);
+  margin:0 0 1rem;
+  color:#fff;
+}
+
+.landing p {
+  font-size:1.3rem;
+  margin:0 0 2rem;
+  color:#e2e8f0;
+}
+
+.landing-actions {
+  display:flex;
+  gap:0.75rem;
+  flex-wrap:wrap;
+}
+
+.landing .btn {
+  background:#fff;
+  color:var(--brand);
+  border-color:#fff;
+}
+
+.landing .btn.alt {
+  background:transparent;
+  color:#fff;
+  border-color:#fff;
+}
+
+/* Cart Drawer */
+#cartDrawer {
+  position:fixed;
+  top:0;
+  right:0;
+  height:100vh;
+  width:min(450px, 100%);
+  background:var(--card);
+  z-index:100;
+  transform:translateX(105%);
+  transition:transform 0.3s ease;
+  overflow-y:auto;
+  padding:1rem;
+  box-shadow:-8px 0 24px rgba(0,0,0,0.3);
+  display:flex;
+  flex-direction:column;
+}
+
+#cartDrawer.open {
+  transform:translateX(0);
+}
+
+.drawer-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:1rem;
+}
+
+.drawer-header h2 {
+  margin:0;
+  font-size:1.8rem;
+}
+
+.close-btn {
+  background:var(--card);
+  color:var(--ink);
+  border:2px solid var(--line);
+  border-radius:50%;
+  width:44px;
+  height:44px;
+  cursor:pointer;
+  font-size:1.2rem;
+}
+
+#cartItems {
+  list-style:none;
+  padding:0;
+  margin:0;
+  flex:1;
+  overflow-y:auto;
+}
+
+.cart-item {
+  display:grid;
+  grid-template-columns:60px 1fr auto auto;
+  gap:0.5rem;
+  align-items:center;
+  padding:0.75rem 0;
+  border-bottom:1px solid var(--line);
+}
+
+.cart-item img {
+  width:60px;
+  height:60px;
+  object-fit:contain;
+  border-radius:8px;
+  background:#f1f8fd;
+}
+
+.qty-controls {
+  display:flex;
+  gap:0.3rem;
+  align-items:center;
+}
+
+.qty-btn {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:2px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  cursor:pointer;
+  font-size:1rem;
+  min-height:36px;
+}
+
+.remove-btn {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:2px solid var(--line);
+  background:var(--card);
+  color:var(--danger);
+  cursor:pointer;
+  font-size:1rem;
+  min-height:36px;
+}
+
+.cart-summary {
+  padding-top:1rem;
+  border-top:2px solid var(--line);
+}
+
+.cart-summary p {
+  display:flex;
+  justify-content:space-between;
+  margin:0.5rem 0;
+}
+
+.cart-summary .total {
+  font-size:1.3rem;
+  font-weight:700;
+  color:var(--brand);
+}
+
+/* Modals */
+dialog {
+  border:0;
+  border-radius:16px;
+  padding:2rem;
+  max-width:450px;
+  width:90%;
+  background:var(--card);
+  color:var(--ink);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+
+dialog::backdrop {
+  background:rgba(0,0,0,0.7);
+}
+
+/* Ante Chat */
+#anteBtn {
+  position:fixed;
+  right:1rem;
+  bottom:1rem;
+  z-index:50;
+  border-radius:999px;
+  padding:0.8rem 1.5rem;
+  box-shadow:0 8px 24px rgba(50,110,214,0.4);
+}
+
+#anteChat {
+  position:fixed;
+  right:1rem;
+  bottom:5rem;
+  z-index:50;
+  width:min(380px, calc(100% - 2rem));
+  max-height:500px;
+  display:none;
+  flex-direction:column;
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+}
+
+#anteChat.open {
+  display:flex;
+}
+
+.chat-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0.75rem 1rem;
+  background:var(--brand);
+  color:var(--on);
+  border-radius:16px 16px 0 0;
+}
+
+.chat-header h3 {
+  margin:0;
+  font-size:1.1rem;
+}
+
+.chat-close {
+  background:transparent;
+  border:none;
+  color:var(--on);
+  font-size:1.3rem;
+  cursor:pointer;
+  min-width:32px;
+  min-height:32px;
+}
+
+.chat-body {
+  flex:1;
+  overflow-y:auto;
+  max-height:300px;
+  padding:0.75rem;
+  background:var(--card);
+  border-left:1px solid var(--line);
+  border-right:1px solid var(--line);
+}
+
+.chat-message {
+  max-width:85%;
+  margin:0.4rem 0;
+  padding:0.5rem 0.75rem;
+  border-radius:12px;
+  white-space:pre-line;
+  word-wrap:break-word;
+}
+
+.chat-message.ante {
+  background:var(--line);
+  align-self:flex-start;
+}
+
+.chat-message.user {
+  background:var(--brand);
+  color:var(--on);
+  align-self:flex-end;
+  margin-left:auto;
+}
+
+.chat-messages {
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-chips {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.35rem;
+  padding:0.5rem 0.75rem;
+  background:var(--card);
+  border-left:1px solid var(--line);
+  border-right:1px solid var(--line);
+}
+
+.chat-chip {
+  font:inherit;
+  font-size:0.8rem;
+  border:1.5px solid var(--brand);
+  background:transparent;
+  color:var(--brand);
+  border-radius:999px;
+  padding:0.25rem 0.6rem;
+  cursor:pointer;
+  min-height:32px;
+}
+
+.chat-chip:hover {
+  background:var(--brand);
+  color:var(--on);
+}
+
+.chat-form {
+  display:flex;
+  gap:0.4rem;
+  padding:0.5rem;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-top:none;
+  border-radius:0 0 16px 16px;
+}
+
+.chat-form input {
+  flex:1;
+  margin:0;
+  padding:0.5rem 0.7rem;
+  min-height:40px;
+}
+
+.chat-form button {
+  padding:0.5rem 1rem;
+  min-height:40px;
+  font-size:0.9rem;
+}
+
+/* Footer */
+footer {
+  background:var(--card);
+  border-top:1px solid var(--line);
+  padding:2rem 1rem 6rem;
+  text-align:center;
+  font-size:0.9rem;
+  color:var(--muted);
+}
+
+footer p {
+  margin:0.4rem 0;
+}
+
+/* Auth Modal */
+.auth-modal {
+  max-width:500px;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  #menuBtn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  
+  nav {
+    display:none;
+    width:100%;
+    order:4;
+  }
+  
+  nav.open {
+    display:block;
+  }
+  
+  nav ul {
+    flex-direction:column;
+    gap:0;
+  }
+  
+  nav a {
+    border-radius:8px;
+    padding:0.7rem 1rem;
+  }
+  
+  .landing {
+    padding:1.5rem;
+    min-height:60vh;
+  }
+}
+
+@media (max-width: 640px) {
+  header {
+    padding:0.5rem;
+  }
+  
+  .brand small {
+    display:none;
+  }
+  
+  .header-btn {
+    font-size:0.85rem;
+    padding:0 0.7rem;
+  }
+  
+  main {
+    padding:1rem 0.75rem 7rem;
+  }
+  
+  .grid {
+    grid-template-columns:1fr;
+  }
+  
+  .form-grid {
+    grid-template-columns:1fr;
+  }
+  
+  .landing {
+    padding:1.25rem;
+  }
+  
+  .landing h1 {
+    font-size:2.2rem;
+  }
+  
+  .landing p {
+    font-size:1.1rem;
+  }
+  
+  .landing-actions {
+    flex-direction:column;
+    width:100%;
+  }
+  
+  .landing-actions .btn {
+    width:100%;
+  }
+  
+  #anteChat {
+    right:0.5rem;
+    left:0.5rem;
+    width:auto;
+    bottom:4.5rem;
+  }
+  
+  #anteBtn {
+    right:0.5rem;
+    bottom:0.5rem;
+    font-size:0.9rem;
+    padding:0.7rem 1.2rem;
+  }
+  
+  dialog {
+    padding:1.25rem;
+    width:95%;
+  }
+  
+  .cart-item {
+    grid-template-columns:50px 1fr;
+    gap:0.4rem;
+  }
+  
+  .cart-item img {
+    grid-row:1 / 3;
+  }
+  
+  .qty-controls {
+    grid-column:2;
+    justify-self:start;
+  }
+  
+  .remove-btn {
+    grid-column:2;
+    justify-self:end;
+    grid-row:2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid.medicine-grid {
+    grid-template-columns:repeat(4, 1fr);
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <a href="#landing" class="brand" aria-label="PHARMA-SEE home">
+    <img src="logo image/logo.jpg" alt="PHARMA-SEE logo" onerror="this.style.display='none'">
+    <div class="brand-text">
+      <span>PHARMA-SEE</span>
+      <small>See it. Reserve it. Pick it up.</small>
+    </div>
+  </a>
+  
+  <button id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+  
+  <nav aria-label="Main navigation" id="mainNav">
+    <ul id="navList">
+      <!-- Nav items populated by JS based on auth state -->
+    </ul>
+  </nav>
+  
+  <div class="header-actions">
+    <button class="header-btn" id="themeBtn" aria-label="Switch theme">🌙</button>
+    <button class="header-btn" id="cartBtn" aria-label="Open cart" style="display:none">
+      🛒 <span id="cartBadge">0</span>
+    </button>
+    <button class="header-btn" id="loginBtn">Log In</button>
+    <button class="header-btn" id="signupBtn">Sign Up</button>
+    <button class="header-btn" id="logoutBtn" style="display:none">Log Out</button>
+  </div>
+</header>
+
+<main>
+  <!-- Landing Page -->
+  <section class="view" id="landing">
+    <div class="landing">
+      <h1>PHARMA-SEE</h1>
+      <p>See it. Reserve it. Pick it up.</p>
+      <div class="landing-actions">
+        <button class="btn" id="landingSignup">Sign Up</button>
+        <button class="btn alt" id="landingLogin">Log In</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Home -->
+  <section class="view" id="customerHome" hidden>
+    <h1>Welcome to PHARMA-SEE</h1>
+    <div class="row">
+      <button class="btn" onclick="navigateTo('medicines')">Browse Medicines</button>
+      <button class="btn alt" onclick="navigateTo('cartPage')">View Cart</button>
+      <button class="btn alt" onclick="navigateTo('customerDashboard')">My Dashboard</button>
+    </div>
+    
+    <h2>Quick Access</h2>
+    <div class="grid">
+      <article class="card" style="cursor:pointer" onclick="navigateTo('medicines')">
+        <h3 style="margin-top:0">MEDICINES</h3>
+        <p>Search, filter and browse our medicine catalog</p>
+      </article>
+      <article class="card" style="cursor:pointer" onclick="navigateTo('aboutPage')">
+        <h3 style="margin-top:0">ABOUT</h3>
+        <p>Learn more about PHARMA-SEE</p>
+      </article>
+      <article class="card" style="cursor:pointer" onclick="navigateTo('contactPage')">
+        <h3 style="margin-top:0">CONTACT</h3>
+        <p>Get in touch with us</p>
+      </article>
+      <article class="card" style="cursor:pointer" onclick="navigateTo('requestItem')">
+        <h3 style="margin-top:0">REQUEST ITEM</h3>
+        <p>Ask for medicines we don't carry</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Medicines Catalog -->
+  <section class="view" id="medicines" hidden>
+    <h1>Medicines Catalog</h1>
+    <p class="muted">Search and filter our available medicines</p>
+    
+    <div class="card">
+      <div class="form-grid">
+        <div>
+          <label for="medSearch">Search</label>
+          <input id="medSearch" type="search" placeholder="Search by name, generic, or category...">
+        </div>
+        <div>
+          <label for="medCategory">Category</label>
+          <select id="medCategory">
+            <option value="">All Categories</option>
+            <option value="Pain Relievers">Pain Relievers</option>
+            <option value="Antibacterials">Antibacterials</option>
+            <option value="Antidiarrheals">Antidiarrheals</option>
+            <option value="Antacids">Antacids</option>
+            <option value="Food Supplements">Food Supplements</option>
+            <option value="Vitamins">Vitamins</option>
+          </select>
+        </div>
+        <div>
+          <label for="medStatus">Status</label>
+          <select id="medStatus">
+            <option value="">All Status</option>
+            <option value="In Stock">In Stock</option>
+            <option value="Low Stock">Low Stock</option>
+            <option value="Out of Stock">Out of Stock</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <p id="medCount" class="muted" aria-live="polite"></p>
+    <div class="grid medicine-grid" id="medGrid"></div>
+  </section>
+
+  <!-- Cart Page -->
+  <section class="view" id="cartPage" hidden>
+    <h1>Shopping Cart</h1>
+    <div class="row">
+      <button class="btn alt" onclick="navigateTo('medicines')">Continue Shopping</button>
+    </div>
+    
+    <div class="card">
+      <h2 style="margin-top:0">Cart Items</h2>
+      <div id="cartPageItems"></div>
+      <div id="cartPageEmpty" style="text-align:center; padding:2rem; display:none">
+        <p class="muted">Your cart is empty</p>
+        <button class="btn" onclick="navigateTo('medicines')">Browse Medicines</button>
+      </div>
+    </div>
+    
+    <div id="cartActions" class="row" style="justify-content:flex-end; margin-top:1rem">
+      <button class="btn" onclick="buyNow()">Buy Now</button>
+      <button class="btn alt" onclick="reserveItems()">Reserve</button>
+    </div>
+  </section>
+
+  <!-- About Page -->
+  <section class="view" id="aboutPage" hidden>
+    <h1>About PHARMA-SEE</h1>
+    <p><strong>Mission:</strong> To make access to medicines easier, faster, and safer for every member of the community.</p>
+    
+    <div class="grid">
+      <article class="card">
+        <h2 style="margin-top:0">The problem</h2>
+        <p>Long waits, not knowing if a medicine is in stock, and trouble tracking refills.</p>
+      </article>
+      <article class="card">
+        <h2 style="margin-top:0">The solution</h2>
+        <p>See live stock and prices, reserve online, and pick up at a set time.</p>
+      </article>
+    </div>
+    
+    <h2>Who we help</h2>
+    <div class="grid">
+      <section class="card"><h3 style="margin-top:0">Seniors</h3><p>Large text and simple steps.</p></section>
+      <section class="card"><h3 style="margin-top:0">Caregivers</h3><p>Reserve and track for someone else.</p></section>
+      <section class="card"><h3 style="margin-top:0">Parents</h3><p>Quick pickups with less waiting.</p></section>
+      <section class="card"><h3 style="margin-top:0">Maintenance patients</h3><p>Refill reminders you can count on.</p></section>
+      <section class="card"><h3 style="margin-top:0">Pharmacy staff</h3><p>Clear inventory and order tools.</p></section>
+    </div>
+  </section>
+
+  <!-- Contact Page -->
+  <section class="view" id="contactPage" hidden>
+    <h1>Contact</h1>
+    <div class="card" style="border-left:4px solid var(--amber)">
+      <strong>Emergency?</strong> Call your local hospital emergency services right away.
+    </div>
+    
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin-top:0">PHARMA-SEE Community Pharmacy</h2>
+        <address style="font-style:normal; margin-bottom:1rem">
+          2F, "Dili Na Malimutan" Building, Beside the Sari-Sari Store That Always Has Load,<br>
+          Purok 5, Barangay Buhangin, Davao City, Davao del Sur, Philippines
+        </address>
+        <p><strong>Phone:</strong> <a href="tel:+63968731598">0968-731-9598</a></p>
+        <p><strong>Hours:</strong><br>Mon–Sat: 8:00 AM – 8:00 PM<br>Sun: 9:00 AM – 5:00 PM</p>
+        <p class="muted">
+          <a href="mailto:samanthe_caermare@sjp2cd.edu.ph">samanthe_caermare@sjp2cd.edu.ph</a><br>
+          <a href="mailto:elle_cadorna@sjp2cd.edu.ph">elle_cadorna@sjp2cd.edu.ph</a><br>
+          <a href="mailto:angela_lariwan@sjp2cd.edu.ph">angela_lariwan@sjp2cd.edu.ph</a>
+        </p>
+      </div>
+      <form class="card" id="contactForm" novalidate>
+        <h2 style="margin-top:0">Send us a message</h2>
+        <label for="contactName">Name</label>
+        <input id="contactName" required>
+        <label for="contactInfo">Email or mobile number</label>
+        <input id="contactInfo" required>
+        <label for="contactTopic">Topic</label>
+        <select id="contactTopic" required>
+          <option value="">Choose...</option>
+          <option>Stock question</option>
+          <option>Reservation</option>
+          <option>Refills</option>
+          <option>Other</option>
+        </select>
+        <label for="contactMsg">Message</label>
+        <textarea id="contactMsg" rows="4" required></textarea>
+        <p class="err" id="contactErr"></p>
+        <p class="ok" id="contactOk"></p>
+        <button class="btn" type="submit">Send message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Request Item -->
+  <section class="view" id="requestItem" hidden>
+    <h1>Request an Item</h1>
+    <p>Can't find the medicine you're looking for? Let us know and we'll try to source it for you.</p>
+    
+    <form class="card" id="requestForm" novalidate style="max-width:600px">
+      <label for="reqName">Your Name</label>
+      <input id="reqName" required>
+      <label for="reqEmail">Email or Mobile</label>
+      <input id="reqEmail" required>
+      <label for="reqMedicine">Medicine Name (Generic or Brand)</label>
+      <input id="reqMedicine" required>
+      <label for="reqDetails">Additional Details (strength, form, quantity needed)</label>
+      <textarea id="reqDetails" rows="4" placeholder="e.g., 500mg tablets, 30 pieces"></textarea>
+      <p class="err" id="reqErr"></p>
+      <p class="ok" id="reqOk"></p>
+      <button class="btn" type="submit">Submit Request</button>
+    </form>
+  </section>
+
+  <!-- Customer Dashboard -->
+  <section class="view" id="customerDashboard" hidden>
+    <h1>My Dashboard</h1>
+    <div class="row">
+      <button class="btn" onclick="navigateTo('medicines')">Shop Medicines</button>
+      <button class="btn alt" onclick="navigateTo('cartPage')">View Cart</button>
+    </div>
+    
+    <h2>My Purchases (Bought)</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Quantity</th><th>Total</th><th>Date</th><th>Status</th></tr>
+        </thead>
+        <tbody id="purchasesTable"></tbody>
+      </table>
+    </div>
+    <p id="purchasesEmpty" class="muted" style="display:none">No purchases yet.</p>
+    
+    <h2>My Reservations</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Quantity</th><th>Total</th><th>Pickup Date/Time</th><th>Status</th></tr>
+        </thead>
+        <tbody id="reservationsTable"></tbody>
+      </table>
+    </div>
+    <p id="reservationsEmpty" class="muted" style="display:none">No reservations yet.</p>
+    
+    <h2>My Requests</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Medicine</th><th>Details</th><th>Date</th><th>Status</th></tr>
+        </thead>
+        <tbody id="requestsTable"></tbody>
+      </table>
+    </div>
+    <p id="requestsEmpty" class="muted" style="display:none">No requests yet.</p>
+  </section>
+
+  <!-- Admin Dashboard -->
+  <section class="view" id="adminDashboard" hidden>
+    <h1>Admin Dashboard</h1>
+    
+    <div class="metrics">
+      <div class="card metric-card">
+        <b id="metricMedicines">0</b>
+        <span>Total Medicines</span>
+      </div>
+      <div class="card metric-card">
+        <b id="metricLowStock">0</b>
+        <span>Low Stock</span>
+      </div>
+      <div class="card metric-card">
+        <b id="metricPending">0</b>
+        <span>Pending Reservations</span>
+      </div>
+      <div class="card metric-card">
+        <b id="metricOrders">0</b>
+        <span>Total Orders</span>
+      </div>
+    </div>
+    
+    <h2>Medicines Management</h2>
+    <div class="card">
+      <h3 style="margin-top:0">Add New Medicine</h3>
+      <form id="addMedicineForm" novalidate>
+        <div class="form-grid">
+          <div>
+            <label for="medName">Product Name</label>
+            <input id="medName" required>
+          </div>
+          <div>
+            <label for="medGeneric">Generic/Composition</label>
+            <input id="medGeneric" required>
+          </div>
+          <div>
+            <label for="medCategoryAdd">Category</label>
+            <select id="medCategoryAdd" required>
+              <option value="">Select</option>
+              <option value="Pain Relievers">Pain Relievers</option>
+              <option value="Antibacterials">Antibacterials</option>
+              <option value="Antidiarrheals">Antidiarrheals</option>
+              <option value="Antacids">Antacids</option>
+              <option value="Food Supplements">Food Supplements</option>
+              <option value="Vitamins">Vitamins</option>
+            </select>
+          </div>
+          <div>
+            <label for="medStrength">Strength</label>
+            <input id="medStrength" required placeholder="500 mg">
+          </div>
+          <div>
+            <label for="medForm">Form</label>
+            <input id="medForm" required placeholder="Tablet">
+          </div>
+          <div>
+            <label for="medPrice">Price (₱)</label>
+            <input id="medPrice" type="number" step="0.01" min="0" required>
+          </div>
+          <div>
+            <label for="medStatusAdd">Status</label>
+            <select id="medStatusAdd" required>
+              <option value="In Stock">In Stock</option>
+              <option value="Low Stock">Low Stock</option>
+              <option value="Out of Stock">Out of Stock</option>
+            </select>
+          </div>
+          <div>
+            <label for="medBatch">Batch</label>
+            <input id="medBatch" required>
+          </div>
+          <div>
+            <label for="medExpiry">Expiry (MM/YYYY)</label>
+            <input id="medExpiry" required placeholder="11/2030" pattern="\d{2}/\d{4}">
+          </div>
+          <div>
+            <label for="medImage">Image filename</label>
+            <input id="medImage" placeholder="biogesic.jpg">
+          </div>
+        </div>
+        <p class="err" id="addMedErr"></p>
+        <button class="btn" type="submit">Add Medicine</button>
+      </form>
+    </div>
+    
+    <div class="card table-wrap">
+      <h3 style="margin-top:0">Current Inventory</h3>
+      <table>
+        <thead>
+          <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Batch</th><th>Expiry</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="inventoryTable"></tbody>
+      </table>
+    </div>
+    
+    <h2>All Customer Orders</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Date/Pickup</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="allOrdersTable"></tbody>
+      </table>
+    </div>
+    
+    <h2>Requested Items</h2>
+    <div class="card">
+      <div id="requestedItemsList"></div>
+    </div>
+    
+    <h2>Ante Questions</h2>
+    <div class="card">
+      <div id="anteQuestionsList"></div>
+    </div>
+  </section>
+</main>
+
+<!-- Cart Drawer -->
+<aside id="cartDrawer" aria-hidden="true">
+  <div class="drawer-header">
+    <h2>Your Cart</h2>
+    <button class="close-btn" id="closeCart" aria-label="Close cart">✕</button>
+  </div>
+  <ul id="cartItems"></ul>
+  <div class="cart-summary">
+    <p><span>Subtotal:</span> <span id="cartSubtotal">₱0.00</span></p>
+    <p class="total"><span>Total:</span> <span id="cartTotal">₱0.00</span></p>
+  </div>
+  <button class="btn" style="width:100%; margin-top:1rem" onclick="viewCartPage()">View Full Cart</button>
+</aside>
+
+<!-- Login Modal -->
+<dialog id="loginModal" class="auth-modal">
+  <h2 style="margin-top:0">Log In</h2>
+  <div id="loginStep1">
+    <p>Log in as:</p>
+    <div class="row">
+      <button class="btn" onclick="showCustomerLogin()">Customer</button>
+      <button class="btn alt" onclick="showAdminLogin()">Admin</button>
+    </div>
+  </div>
+  <div id="loginCustomer" style="display:none">
+    <label for="custEmail">Email</label>
+    <input id="custEmail" type="email">
+    <label for="custPassword">Password</label>
+    <input id="custPassword" type="password">
+    <p class="err" id="custLoginErr"></p>
+    <div class="row" style="margin-top:1rem">
+      <button class="btn" onclick="customerLogin()">Log In</button>
+      <button class="btn alt" onclick="backToLoginChoice()">Back</button>
+    </div>
+  </div>
+  <div id="loginAdmin" style="display:none">
+    <label for="adminEmail">Email</label>
+    <input id="adminEmail" type="email">
+    <label for="adminPassword">Password</label>
+    <input id="adminPassword" type="password" value="PHARMASEE2026">
+    <p class="muted">Only authorized admin emails can access.</p>
+    <p class="err" id="adminLoginErr"></p>
+    <div class="row" style="margin-top:1rem">
+      <button class="btn" onclick="adminLogin()">Log In</button>
+      <button class="btn alt" onclick="backToLoginChoice()">Back</button>
+    </div>
+  </div>
+  <button class="btn alt" style="margin-top:1rem" onclick="closeLogin()">Cancel</button>
+</dialog>
+
+<!-- Signup Modal -->
+<dialog id="signupModal" class="auth-modal">
+  <h2 style="margin-top:0">Sign Up</h2>
+  <form id="signupForm" novalidate>
+    <label for="signupName">Full Name</label>
+    <input id="signupName" required>
+    <label for="signupEmail">Email</label>
+    <input id="signupEmail" type="email" required>
+    <label for="signupMobile">Mobile Number</label>
+    <input id="signupMobile" required placeholder="09xx xxx xxxx">
+    <label for="signupPassword">Password</label>
+    <input id="signupPassword" type="password" required>
+    <p class="err" id="signupErr"></p>
+    <p class="ok" id="signupOk"></p>
+    <div class="row" style="margin-top:1rem">
+      <button class="btn" type="submit">Sign Up</button>
+      <button class="btn alt" type="button" onclick="closeSignup()">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Reserve Modal -->
+<dialog id="reserveModal">
+  <h2 style="margin-top:0">Reserve Items</h2>
+  <p>Enter pickup details</p>
+  <label for="reserveName">Full Name</label>
+  <input id="reserveName">
+  <label for="reserveMobile">Mobile Number</label>
+  <input id="reserveMobile" placeholder="09xx xxx xxxx">
+  <label for="reserveDate">Pickup Date</label>
+  <input id="reserveDate" type="date">
+  <label for="reserveTime">Pickup Time</label>
+  <input id="reserveTime" type="time">
+  <div class="card" style="border-left:4px solid var(--amber); margin-top:1rem">
+    <small>Prescription items require a prescription at pickup.</small>
+  </div>
+  <p class="err" id="reserveErr"></p>
+  <div class="row" style="margin-top:1rem">
+    <button class="btn" onclick="confirmReserve()">Confirm Reservation</button>
+    <button class="btn alt" onclick="closeReserve()">Cancel</button>
+  </div>
+</dialog>
+
+<!-- Buy Now Modal -->
+<dialog id="buyNowModal">
+  <h2 style="margin-top:0">Complete Purchase</h2>
+  <p>Enter your details</p>
+  <label for="buyName">Full Name</label>
+  <input id="buyName">
+  <label for="buyMobile">Mobile Number</label>
+  <input id="buyMobile" placeholder="09xx xxx xxxx">
+  <p class="err" id="buyErr"></p>
+  <div class="row" style="margin-top:1rem">
+    <button class="btn" onclick="confirmBuy()">Confirm Purchase</button>
+    <button class="btn alt" onclick="closeBuy()">Cancel</button>
+  </div>
+</dialog>
+
+<!-- Ante Chat -->
+<button id="anteBtn" class="btn" aria-expanded="false">Chat with Ante</button>
+<section id="anteChat" aria-label="Chat with Ante">
+  <div class="chat-header">
+    <h3>Ante - Customer Service</h3>
+    <button class="chat-close" id="closeAnte" aria-label="Close chat">✕</button>
+  </div>
+  <div class="chat-body">
+    <div class="chat-messages" id="chatMessages"></div>
+  </div>
+  <div class="chat-chips" id="chatChips"></div>
+  <form class="chat-form" id="chatForm">
+    <input id="chatInput" placeholder="Ask about stock, hours, etc..." autocomplete="off">
+    <button class="btn" type="submit">Send</button>
+  </form>
+</section>
+
+<footer>
+  <p><strong>PHARMA-SEE Community Pharmacy</strong> · 0968-731-9598 · Mon–Sat 8:00 AM – 8:00 PM · Sun 9:00 AM – 5:00 PM</p>
+  <p>Chat with Ante for instant help.</p>
+  <p><a href="#aboutPage" onclick="navigateTo('aboutPage')">About</a> · © 2026 PHARMA-SEE</p>
+  <p class="muted">Pharma-See is a demonstration website. It does not provide medical diagnosis or replace advice from a licensed pharmacist or physician.</p>
+</footer>
+
+<script>
+// Medicine Data
+const MEDICINES = [
+  {id:1, category:'Pain Relievers', name:'Biogesic Tab', generic:'Paracetamol', strength:'500 mg', form:'Tablet', price:5.00, status:'In Stock', batch:'BGS-2024-0891', expiry:'11/2030', image:'biogesic.jpg'},
+  {id:2, category:'Pain Relievers', name:'Medicol 200', generic:'Ibuprofen', strength:'200 mg', form:'Softgel', price:7.00, status:'Low Stock', batch:'MED-200-5412', expiry:'03/2030', image:'medicol.jpg'},
+  {id:3, category:'Pain Relievers', name:'Medicol 400', generic:'Ibuprofen', strength:'400 mg', form:'Softgel', price:11.50, status:'In Stock', batch:'MED-400-8821', expiry:'08/2030', image:'medicol 400.jpg'},
+  {id:4, category:'Pain Relievers', name:'Alaxan Xtra', generic:'Ibuprofen + Paracetamol', strength:'200/325 mg', form:'Capsule', price:9.75, status:'In Stock', batch:'ALX-904-1123', expiry:'05/2030', image:'alaxan.jpg'},
+  {id:5, category:'Pain Relievers', name:'Mefenamic Acid', generic:'Mefenamic Acid', strength:'500 mg', form:'Capsule', price:12.00, status:'Out of Stock', batch:'MEF-500-3310', expiry:'10/2030', image:'mefenamic.jpg'},
+  {id:6, category:'Antibacterials', name:'Amoxicillin', generic:'Amoxicillin', strength:'500 mg', form:'Capsule', price:10.00, status:'In Stock', batch:'AMX-500-7214', expiry:'02/2030', image:'amoxicillin.jpg'},
+  {id:7, category:'Antibacterials', name:'Cefixime', generic:'Cefixime', strength:'200 mg', form:'Capsule', price:60.00, status:'Low Stock', batch:'CFX-200-1109', expiry:'09/2030', image:'cefixime.jpg'},
+  {id:8, category:'Antibacterials', name:'Azithromycin', generic:'Azithromycin', strength:'500 mg', form:'Tablet', price:85.00, status:'In Stock', batch:'AZT-500-6022', expiry:'12/2030', image:'Azithromycin.jpg'},
+  {id:9, category:'Antibacterials', name:'Cefuroxime', generic:'Cefuroxime Axetil', strength:'500 mg', form:'Tablet', price:55.00, status:'In Stock', batch:'CFU-500-4187', expiry:'04/2030', image:'Cefuroxime.jpg'},
+  {id:10, category:'Antibacterials', name:'Cotrimoxazole', generic:'Sulfamethoxazole + Trimethoprim', strength:'800/160 mg', form:'Tablet', price:15.00, status:'Out of Stock', batch:'CTX-800-2951', expiry:'01/2030', image:'Cotrimoxazole.jpg'},
+  {id:11, category:'Antidiarrheals', name:'Diatabs', generic:'Loperamide HCl', strength:'2 mg', form:'Capsule', price:8.00, status:'In Stock', batch:'DTB-002-8374', expiry:'07/2030', image:'Diatabs.jpg'},
+  {id:12, category:'Antidiarrheals', name:'Imodium', generic:'Loperamide HCl', strength:'2 mg', form:'Capsule', price:18.00, status:'In Stock', batch:'IMD-002-1940', expiry:'06/2030', image:'Imodium.jpg'},
+  {id:13, category:'Antidiarrheals', name:'Lomotil', generic:'Diphenoxylate HCl + Atropine Sulfate', strength:'2.5/0.025 mg', form:'Tablet', price:21.00, status:'Low Stock', batch:'LMT-250-7033', expiry:'11/2030', image:'Lomotil.jpg'},
+  {id:14, category:'Antacids', name:'Kremil-S Pink', generic:'Al/Mg Hydroxide + Simethicone', strength:'178/233/30 mg', form:'Chewable Tablet', price:8.00, status:'In Stock', batch:'KRM-PNK-3811', expiry:'08/2030', image:'Kremil-S Pink.jpg'},
+  {id:15, category:'Antacids', name:'Kremil-S Advance', generic:'Famotidine + Calcium Carbonate + Mg Hydroxide', strength:'10/800/165 mg', form:'Chewable Tablet', price:20.00, status:'In Stock', batch:'KRM-ADV-9024', expiry:'02/2030', image:'Kremil-S Advance.jpg'},
+  {id:16, category:'Antacids', name:'Gaviscon Plain', generic:'Sodium Alginate + Sodium Bicarbonate + Calcium Carbonate', strength:'10 mL', form:'Sachet', price:31.00, status:'Low Stock', batch:'GVS-PLN-5120', expiry:'05/2030', image:'Gaviscon Plain.jpg'},
+  {id:17, category:'Antacids', name:'Gaviscon Double Action', generic:'Sodium Alginate + Sodium Bicarbonate + Calcium Carbonate', strength:'10 mL', form:'Sachet', price:36.00, status:'In Stock', batch:'GVS-DBL-8841', expiry:'10/2030', image:'Gaviscon Double Action.jpg'},
+  {id:18, category:'Antacids', name:'Maalox', generic:'Aluminum Hydroxide + Magnesium Hydroxide', strength:'200/200 mg', form:'Chewable Tablet', price:13.00, status:'Out of Stock', batch:'MLX-200-6392', expiry:'03/2030', image:'Maalox.jpg'},
+  {id:19, category:'Food Supplements', name:'Eyeberry', generic:'Bilberry Extract + Lutein', strength:'80/5 mg', form:'Capsule', price:25.00, status:'In Stock', batch:'EYB-080-1492', expiry:'04/2030', image:'Eyeberry.jpg'},
+  {id:20, category:'Food Supplements', name:'Optein', generic:'Lutein + Zeaxanthin', strength:'10/2 mg', form:'Capsule', price:27.00, status:'In Stock', batch:'OPT-010-8831', expiry:'01/2030', image:'Optein.jpg'},
+  {id:21, category:'Food Supplements', name:'Ginkgo Biloba', generic:'Ginkgo Biloba Leaf Extract', strength:'120 mg', form:'Capsule', price:16.00, status:'In Stock', batch:'GKB-120-4091', expiry:'09/2030', image:'Ginkgo Biloba.jpg'},
+  {id:22, category:'Food Supplements', name:'Fish Oil', generic:'Omega-3 Fatty Acids', strength:'1000 mg', form:'Softgel', price:14.50, status:'Low Stock', batch:'FSH-100-3329', expiry:'12/2030', image:'Fish Oil.jpg'},
+  {id:23, category:'Food Supplements', name:'Lecit E', generic:'Lecithin + Vitamin E', strength:'1200 mg / 200 IU', form:'Softgel', price:15.00, status:'In Stock', batch:'LCT-120-7714', expiry:'06/2030', image:'Lecit E.jpg'},
+  {id:24, category:'Vitamins', name:'Stresstabs', generic:'Multivitamins + Iron + B-Complex', strength:'High Potency', form:'Tablet', price:11.50, status:'In Stock', batch:'STR-901-5521', expiry:'07/2030', image:'Stresstabs.jpg'},
+  {id:25, category:'Vitamins', name:'Myra-E', generic:'d-Alpha Tocopherol (Vit E)', strength:'400 IU', form:'Capsule', price:14.00, status:'In Stock', batch:'MYR-400-2084', expiry:'11/2030', image:'Myra-E.jpg'},
+  {id:26, category:'Vitamins', name:'Bewell-C', generic:'Sodium Ascorbate (Vit C)', strength:'500 mg', form:'Capsule', price:7.50, status:'In Stock', batch:'BWC-500-6190', expiry:'08/2030', image:'Bewell-C.jpg'},
+  {id:27, category:'Vitamins', name:'Lactezin', generic:'Lactoferrin + Vitamin E + Zinc', strength:'100 mg/11 IU/5 mg', form:'Capsule', price:28.00, status:'In Stock', batch:'LCT-100-9432', expiry:'03/2030', image:'lactezin.jpg'}
+];
+
+let cart = JSON.parse(localStorage.getItem('pharmaCart') || '[]');
+let currentUser = JSON.parse(localStorage.getItem('pharmaUser') || 'null');
+let users = JSON.parse(localStorage.getItem('pharmaUsers') || '[]');
+let orders = JSON.parse(localStorage.getItem('pharmaOrders') || '[]');
+let requests = JSON.parse(localStorage.getItem('pharmaRequests') || '[]');
+let anteQuestions = JSON.parse(localStorage.getItem('pharmaAnteQuestions') || '[]');
+
+const adminEmails = ['samantha_caermare@sjp2cd.edu.ph', 'elle_cadorna@sjp2cd.edu.ph', 'angela_lariwan@sjp2cd.edu.ph'];
+const adminPassword = 'PHARMASEE2026';
+
+// Theme
+function initTheme() {
+  const saved = localStorage.getItem('pharmaTheme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
+}
+
+document.getElementById('themeBtn').onclick = () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('pharmaTheme', next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+};
+
+// Navigation
+function updateNav() {
+  const navList = document.getElementById('navList');
+  navList.innerHTML = '';
+  
+  // Common nav
+  const items = [
+    {text: 'Home', href: '#customerHome', show: currentUser && currentUser.role === 'customer'},
+    {text: 'Medicines', href: '#medicines', show: currentUser && currentUser.role === 'customer'},
+    {text: 'My Dashboard', href: '#customerDashboard', show: currentUser && currentUser.role === 'customer'},
+    {text: 'About', href: '#aboutPage', show: currentUser && currentUser.role !== 'admin'},
+    {text: 'Contact', href: '#contactPage', show: currentUser && currentUser.role !== 'admin'},
+    {text: 'Request Item', href: '#requestItem', show: currentUser && currentUser.role === 'customer'},
+    {text: 'Admin Dashboard', href: '#adminDashboard', show: currentUser && currentUser.role === 'admin'}
+  ];
+  
+  items.forEach(item => {
+    if (item.show) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = item.href;
+      a.textContent = item.text;
+      a.onclick = (e) => {
+        e.preventDefault();
+        navigateTo(item.href.slice(1));
+      };
+      li.appendChild(a);
+      navList.appendChild(li);
+    }
+  });
+}
+
+function navigateTo(viewId) {
+  document.querySelectorAll('.view').forEach(v => v.hidden = true);
+  const view = document.getElementById(viewId);
+  if (view) {
+    view.hidden = false;
+    view.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }
+  
+  // Update nav active state
+  document.querySelectorAll('#navList a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + viewId);
+  });
+  
+  // Close mobile nav
+  document.getElementById('mainNav').classList.remove('open');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
+  
+  // Render specific views
+  if (viewId === 'medicines') renderMedicines();
+  if (viewId === 'cartPage') renderCartPage();
+  if (viewId === 'customerDashboard') renderCustomerDashboard();
+  if (viewId === 'adminDashboard') renderAdminDashboard();
+}
+
+document.getElementById('menuBtn').onclick = () => {
+  const nav = document.getElementById('mainNav');
+  const open = nav.classList.toggle('open');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', open);
+};
+
+// Auth
+document.getElementById('loginBtn').onclick = () => document.getElementById('loginModal').showModal();
+document.getElementById('signupBtn').onclick = () => document.getElementById('signupModal').showModal();
+document.getElementById('landingLogin').onclick = () => document.getElementById('loginModal').showModal();
+document.getElementById('landingSignup').onclick = () => document.getElementById('signupModal').showModal();
+
+function closeLogin() {
+  document.getElementById('loginModal').close();
+  document.getElementById('loginStep1').style.display = 'block';
+  document.getElementById('loginCustomer').style.display = 'none';
+  document.getElementById('loginAdmin').style.display = 'none';
+  document.getElementById('custLoginErr').textContent = '';
+  document.getElementById('adminLoginErr').textContent = '';
+}
+
+function closeSignup() {
+  document.getElementById('signupModal').close();
+  document.getElementById('signupForm').reset();
+  document.getElementById('signupErr').textContent = '';
+  document.getElementById('signupOk').textContent = '';
+}
+
+function showCustomerLogin() {
+  document.getElementById('loginStep1').style.display = 'none';
+  document.getElementById('loginCustomer').style.display = 'block';
+}
+
+function showAdminLogin() {
+  document.getElementById('loginStep1').style.display = 'none';
+  document.getElementById('loginAdmin').style.display = 'block';
+}
+
+function backToLoginChoice() {
+  document.getElementById('loginStep1').style.display = 'block';
+  document.getElementById('loginCustomer').style.display = 'none';
+  document.getElementById('loginAdmin').style.display = 'none';
+}
+
+document.getElementById('signupForm').onsubmit = (e) => {
+  e.preventDefault();
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const mobile = document.getElementById('signupMobile').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  
+  document.getElementById('signupErr').textContent = '';
+  document.getElementById('signupOk').textContent = '';
+  
+  if (!name || !email || !mobile || !password) {
+    document.getElementById('signupErr').textContent = 'All fields are required';
+    return;
+  }
+  
+  if (users.find(u => u.email === email)) {
+    document.getElementById('signupErr').textContent = 'Email already registered';
+    return;
+  }
+  
+  const user = { id: Date.now(), name, email, mobile, password, role: 'customer' };
+  users.push(user);
+  localStorage.setItem('pharmaUsers', JSON.stringify(users));
+  
+  document.getElementById('signupOk').textContent = 'Account created successfully! You can now log in.';
+  setTimeout(() => {
+    closeSignup();
+    document.getElementById('loginModal').showModal();
+    showCustomerLogin();
+    document.getElementById('custEmail').value = email;
+  }, 1500);
+};
+
+function customerLogin() {
+  const email = document.getElementById('custEmail').value.trim();
+  const password = document.getElementById('custPassword').value;
+  document.getElementById('custLoginErr').textContent = '';
+  
+  const user = users.find(u => u.email === email && u.password === password);
+  if (!user) {
+    document.getElementById('custLoginErr').textContent = 'Invalid email or password';
+    return;
+  }
+  
+  currentUser = user;
+  localStorage.setItem('pharmaUser', JSON.stringify(currentUser));
+  closeLogin();
+  updateAuthUI();
+  navigateTo('customerHome');
+}
+
+function adminLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  document.getElementById('adminLoginErr').textContent = '';
+  
+  if (!adminEmails.includes(email)) {
+    document.getElementById('adminLoginErr').textContent = 'Access denied.';
+    return;
+  }
+  if (password !== adminPassword) {
+    document.getElementById('adminLoginErr').textContent = 'Access denied.';
+    return;
+  }
+  
+  currentUser = { email, role: 'admin', name: 'Administrator' };
+  localStorage.setItem('pharmaUser', JSON.stringify(currentUser));
+  closeLogin();
+  updateAuthUI();
+  navigateTo('adminDashboard');
+}
+
+document.getElementById('logoutBtn').onclick = () => {
+  currentUser = null;
+  localStorage.removeItem('pharmaUser');
+  updateAuthUI();
+  navigateTo('landing');
+};
+
+function updateAuthUI() {
+  if (currentUser) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('signupBtn').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-flex';
+    if (currentUser.role === 'customer') {
+      document.getElementById('cartBtn').style.display = 'inline-flex';
+    } else {
+      document.getElementById('cartBtn').style.display = 'none';
+    }
+    updateNav();
+    if (currentUser.role === 'admin') {
+      navigateTo('adminDashboard');
+    } else if (currentUser.role === 'customer') {
+      // Keep current view or go to home if on landing
+      const current = document.querySelector('.view:not([hidden])');
+      if (current && current.id === 'landing') {
+        navigateTo('customerHome');
+      }
+    }
+  } else {
+    document.getElementById('loginBtn').style.display = 'inline-flex';
+    document.getElementById('signupBtn').style.display = 'inline-flex';
+    document.getElementById('logoutBtn').style.display = 'none';
+    document.getElementById('cartBtn').style.display = 'none';
+    updateNav();
+    navigateTo('landing');
+  }
+  updateCartBadge();
+}
+
+// Cart
+document.getElementById('cartBtn').onclick = () => {
+  if (!currentUser || currentUser.role !== 'customer') {
+    alert('Only customers can access cart');
+    return;
+  }
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartDrawer').setAttribute('aria-hidden', 'false');
+  renderCartDrawer();
+};
+
+document.getElementById('closeCart').onclick = () => {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartDrawer').setAttribute('aria-hidden', 'true');
+};
+
+function updateCartBadge() {
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+  document.getElementById('cartBadge').textContent = count;
+}
+
+function addToCart(medicineId) {
+  if (!currentUser || currentUser.role !== 'customer') {
+    alert('Please log in as a customer to add items to cart');
+    document.getElementById('loginModal').showModal();
+    return;
+  }
+  
+  const medicine = MEDICINES.find(m => m.id === medicineId);
+  if (!medicine || medicine.status === 'Out of Stock') {
+    alert('This item is out of stock');
+    return;
+  }
+  
+  const existing = cart.find(item => item.id === medicineId);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ id: medicineId, quantity: 1 });
+  }
+  
+  localStorage.setItem('pharmaCart', JSON.stringify(cart));
+  updateCartBadge();
+  renderCartDrawer();
+  document.getElementById('cartDrawer').classList.add('open');
+}
+
+function renderCartDrawer() {
+  const cartItemsEl = document.getElementById('cartItems');
+  cartItemsEl.innerHTML = '';
+  
+  if (cart.length === 0) {
+    cartItemsEl.innerHTML = '<li style="text-align:center; color:var(--muted); padding:2rem">Your cart is empty</li>';
+    document.getElementById('cartSubtotal').textContent = '₱0.00';
+    document.getElementById('cartTotal').textContent = '₱0.00';
+    return;
+  }
+  
+  let subtotal = 0;
+  cart.forEach(item => {
+    const medicine = MEDICINES.find(m => m.id === item.id);
+    if (medicine) {
+      subtotal += medicine.price * item.quantity;
+      const li = document.createElement('li');
+      li.className = 'cart-item';
+      li.innerHTML = `
+        <img src="medicine images/${medicine.image}" alt="${medicine.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%23dbeefc%22/%3E%3C/svg%3E'">
+        <div>
+          <strong>${medicine.name}</strong><br>
+          <span class="muted">${medicine.price.toFixed(2)} each</span>
+        </div>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+          <span>${item.quantity}</span>
+          <button class="qty-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+        </div>
+        <button class="remove-btn" onclick="removeFromCart(${item.id})">✕</button>
+      `;
+      cartItemsEl.appendChild(li);
+    }
+  });
+  
+  document.getElementById('cartSubtotal').textContent = '₱' + subtotal.toFixed(2);
+  document.getElementById('cartTotal').textContent = '₱' + subtotal.toFixed(2);
+}
+
+function changeQuantity(medicineId, delta) {
+  const item = cart.find(i => i.id === medicineId);
+  if (item) {
+    item.quantity += delta;
+    if (item.quantity <= 0) {
+      cart = cart.filter(i => i.id !== medicineId);
+    }
+    localStorage.setItem('pharmaCart', JSON.stringify(cart));
+    updateCartBadge();
+    renderCartDrawer();
+    if (document.getElementById('cartPage').hidden === false) renderCartPage();
+  }
+}
+
+function removeFromCart(medicineId) {
+  cart = cart.filter(i => i.id !== medicineId);
+  localStorage.setItem('pharmaCart', JSON.stringify(cart));
+  updateCartBadge();
+  renderCartDrawer();
+  if (document.getElementById('cartPage').hidden === false) renderCartPage();
+}
+
+function viewCartPage() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  navigateTo('cartPage');
+}
+
+// Medicines
+function renderMedicines() {
+  const search = document.getElementById('medSearch').value.toLowerCase();
+  const category = document.getElementById('medCategory').value;
+  const status = document.getElementById('medStatus').value;
+  
+  let filtered = MEDICINES.filter(m => {
+    const matchesSearch = !search || m.name.toLowerCase().includes(search) || m.generic.toLowerCase().includes(search) || m.category.toLowerCase().includes(search);
+    const matchesCategory = !category || m.category === category;
+    const matchesStatus = !status || m.status === status;
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+  
+  document.getElementById('medCount').textContent = `Showing ${filtered.length} of ${MEDICINES.length} medicines`;
+  
+  const grid = document.getElementById('medGrid');
+  grid.innerHTML = '';
+  
+  filtered.forEach(med => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <img class="pimg" src="medicine images/${med.image}" alt="${med.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%23dbeefc%22/%3E%3C/svg%3E'">
+      <h3 style="margin:0.5rem 0 0">${med.name}</h3>
+      <p class="muted" style="margin:0">${med.generic}</p>
+      <p class="muted" style="margin:0">${med.form} · ${med.strength}</p>
+      <div class="row" style="justify-content:space-between; margin-top:0.5rem">
+        <span class="price">₱${med.price.toFixed(2)}</span>
+        <span class="badge ${med.status.replace(' ', '')}">${med.status}</span>
+      </div>
+      <p class="muted" style="font-size:0.85rem; margin:0.5rem 0">Batch: ${med.batch} · Exp: ${med.expiry}</p>
+      <button class="btn" style="width:100%" onclick="addToCart(${med.id})" ${med.status === 'Out of Stock' ? 'disabled' : ''}>
+        ${med.status === 'Out of Stock' ? 'Out of Stock' : 'Add to Cart'}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById('medSearch').oninput = renderMedicines;
+document.getElementById('medCategory').onchange = renderMedicines;
+document.getElementById('medStatus').onchange = renderMedicines;
+
+// Cart Page
+function renderCartPage() {
+  const itemsDiv = document.getElementById('cartPageItems');
+  const emptyDiv = document.getElementById('cartPageEmpty');
+  const actionsDiv = document.getElementById('cartActions');
+  
+  if (cart.length === 0) {
+    itemsDiv.innerHTML = '';
+    emptyDiv.style.display = 'block';
+    actionsDiv.style.display = 'none';
+    return;
+  }
+  
+  emptyDiv.style.display = 'none';
+  actionsDiv.style.display = 'flex';
+  itemsDiv.innerHTML = '';
+  
+  let total = 0;
+  cart.forEach(item => {
+    const medicine = MEDICINES.find(m => m.id === item.id);
+    if (medicine) {
+      total += medicine.price * item.quantity;
+      const div = document.createElement('div');
+      div.style.display = 'grid';
+      div.style.gridTemplateColumns = '80px 1fr auto auto';
+      div.style.gap = '1rem';
+      div.style.alignItems = 'center';
+      div.style.padding = '1rem 0';
+      div.style.borderBottom = '1px solid var(--line)';
+      div.innerHTML = `
+        <img src="medicine images/${medicine.image}" alt="${medicine.name}" style="width:80px; height:80px; object-fit:contain; background:#f1f8fd; border-radius:8px" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%23dbeefc%22/%3E%3C/svg%3E'">
+        <div>
+          <strong>${medicine.name}</strong><br>
+          <span class="muted">${medicine.generic} - ${medicine.strength}</span><br>
+          <span class="price">₱${medicine.price.toFixed(2)}</span>
+        </div>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+          <span>${item.quantity}</span>
+          <button class="qty-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+        </div>
+        <button class="remove-btn" onclick="removeFromCart(${item.id})">✕</button>
+      `;
+      itemsDiv.appendChild(div);
+    }
+  });
+  
+  const totalDiv = document.createElement('div');
+  totalDiv.style.textAlign = 'right';
+  totalDiv.style.marginTop = '1rem';
+  totalDiv.innerHTML = `<strong style="font-size:1.3rem">Total: ₱${total.toFixed(2)}</strong>`;
+  itemsDiv.appendChild(totalDiv);
+}
+
+// Buy Now
+function buyNow() {
+  if (cart.length === 0) {
+    alert('Your cart is empty');
+    return;
+  }
+  document.getElementById('buyNowModal').showModal();
+}
+
+function closeBuy() {
+  document.getElementById('buyNowModal').close();
+  document.getElementById('buyErr').textContent = '';
+}
+
+function confirmBuy() {
+  const name = document.getElementById('buyName').value.trim();
+  const mobile = document.getElementById('buyMobile').value.trim();
+  document.getElementById('buyErr').textContent = '';
+  
+  if (!name || !mobile) {
+    document.getElementById('buyErr').textContent = 'Please fill in all fields';
+    return;
+  }
+  
+  cart.forEach(item => {
+    const medicine = MEDICINES.find(m => m.id === item.id);
+    if (medicine) {
+      orders.push({
+        id: Date.now() + Math.random(),
+        customer: currentUser.name,
+        customerEmail: currentUser.email,
+        items: [{name: medicine.name, quantity: item.quantity, price: medicine.price}],
+        total: medicine.price * item.quantity,
+        type: 'Bought',
+        date: new Date().toLocaleDateString(),
+        status: 'Completed'
+      });
+    }
+  });
+  
+  localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+  cart = [];
+  localStorage.setItem('pharmaCart', JSON.stringify(cart));
+  updateCartBadge();
+  closeBuy();
+  alert('Purchase completed successfully!');
+  renderCartPage();
+  navigateTo('customerDashboard');
+}
+
+// Reserve
+function reserveItems() {
+  if (cart.length === 0) {
+    alert('Your cart is empty');
+    return;
+  }
+  document.getElementById('reserveModal').showModal();
+  // Set min date to today
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('reserveDate').min = `${yyyy}-${mm}-${dd}`;
+}
+
+function closeReserve() {
+  document.getElementById('reserveModal').close();
+  document.getElementById('reserveErr').textContent = '';
+}
+
+function confirmReserve() {
+  const name = document.getElementById('reserveName').value.trim();
+  const mobile = document.getElementById('reserveMobile').value.trim();
+  const date = document.getElementById('reserveDate').value;
+  const time = document.getElementById('reserveTime').value;
+  
+  document.getElementById('reserveErr').textContent = '';
+  
+  if (!name || !mobile || !date || !time) {
+    document.getElementById('reserveErr').textContent = 'Please fill in all fields';
+    return;
+  }
+  
+  cart.forEach(item => {
+    const medicine = MEDICINES.find(m => m.id === item.id);
+    if (medicine) {
+      orders.push({
+        id: Date.now() + Math.random(),
+        customer: currentUser.name,
+        customerEmail: currentUser.email,
+        items: [{name: medicine.name, quantity: item.quantity, price: medicine.price}],
+        total: medicine.price * item.quantity,
+        type: 'Reserved',
+        pickupDate: date,
+        pickupTime: time,
+        date: new Date().toLocaleDateString(),
+        status: 'Pending'
+      });
+    }
+  });
+  
+  localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+  cart = [];
+  localStorage.setItem('pharmaCart', JSON.stringify(cart));
+  updateCartBadge();
+  closeReserve();
+  alert('Reservation confirmed! Please pick up at your selected time.');
+  renderCartPage();
+  navigateTo('customerDashboard');
+}
+
+// Customer Dashboard
+function renderCustomerDashboard() {
+  // Purchases
+  const purchases = orders.filter(o => o.type === 'Bought' && o.customerEmail === currentUser.email);
+  const purchasesTable = document.getElementById('purchasesTable');
+  const purchasesEmpty = document.getElementById('purchasesEmpty');
+  purchasesTable.innerHTML = '';
+  if (purchases.length === 0) {
+    purchasesEmpty.style.display = 'block';
+  } else {
+    purchasesEmpty.style.display = 'none';
+    purchases.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${p.items.map(i => i.name).join(', ')}</td>
+        <td>${p.items.map(i => i.quantity).join(', ')}</td>
+        <td>₱${p.total.toFixed(2)}</td>
+        <td>${p.date}</td>
+        <td>${p.status}</td>
+      `;
+      purchasesTable.appendChild(tr);
+    });
+  }
+  
+  // Reservations
+  const reservations = orders.filter(o => o.type === 'Reserved' && o.customerEmail === currentUser.email);
+  const reservationsTable = document.getElementById('reservationsTable');
+  const reservationsEmpty = document.getElementById('reservationsEmpty');
+  reservationsTable.innerHTML = '';
+  if (reservations.length === 0) {
+    reservationsEmpty.style.display = 'block';
+  } else {
+    reservationsEmpty.style.display = 'none';
+    reservations.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${r.items.map(i => i.name).join(', ')}</td>
+        <td>${r.items.map(i => i.quantity).join(', ')}</td>
+        <td>₱${r.total.toFixed(2)}</td>
+        <td>${r.pickupDate} ${r.pickupTime}</td>
+        <td>${r.status}</td>
+      `;
+      reservationsTable.appendChild(tr);
+    });
+  }
+  
+  // Requests
+  const myRequests = requests.filter(r => r.email === currentUser.email);
+  const requestsTable = document.getElementById('requestsTable');
+  const requestsEmpty = document.getElementById('requestsEmpty');
+  requestsTable.innerHTML = '';
+  if (myRequests.length === 0) {
+    requestsEmpty.style.display = 'block';
+  } else {
+    requestsEmpty.style.display = 'none';
+    myRequests.forEach(req => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${req.medicine}</td>
+        <td>${req.details}</td>
+        <td>${req.date}</td>
+        <td>${req.status}</td>
+      `;
+      requestsTable.appendChild(tr);
+    });
+  }
+}
+
+// Request Item
+document.getElementById('requestForm').onsubmit = (e) => {
+  e.preventDefault();
+  const name = document.getElementById('reqName').value.trim();
+  const email = document.getElementById('reqEmail').value.trim();
+  const medicine = document.getElementById('reqMedicine').value.trim();
+  const details = document.getElementById('reqDetails').value.trim();
+  
+  document.getElementById('reqErr').textContent = '';
+  document.getElementById('reqOk').textContent = '';
+  
+  if (!name || !email || !medicine) {
+    document.getElementById('reqErr').textContent = 'Please fill in required fields';
+    return;
+  }
+  
+  requests.push({
+    id: Date.now(),
+    name,
+    email,
+    medicine,
+    details,
+    date: new Date().toLocaleDateString(),
+    status: 'Pending'
+  });
+  localStorage.setItem('pharmaRequests', JSON.stringify(requests));
+  
+  document.getElementById('reqOk').textContent = 'Request submitted successfully!';
+  document.getElementById('requestForm').reset();
+};
+
+// Contact Form
+document.getElementById('contactForm').onsubmit = (e) => {
+  e.preventDefault();
+  const name = document.getElementById('contactName').value.trim();
+  const info = document.getElementById('contactInfo').value.trim();
+  const topic = document.getElementById('contactTopic').value;
+  const msg = document.getElementById('contactMsg').value.trim();
+  
+  document.getElementById('contactErr').textContent = '';
+  document.getElementById('contactOk').textContent = '';
+  
+  if (!name || !info || !topic || !msg) {
+    document.getElementById('contactErr').textContent = 'All fields are required';
+    return;
+  }
+  
+  document.getElementById('contactOk').textContent = 'Thank you. Your message has been sent.';
+  document.getElementById('contactForm').reset();
+};
+
+// Admin Dashboard
+function renderAdminDashboard() {
+  // Metrics
+  document.getElementById('metricMedicines').textContent = MEDICINES.length;
+  document.getElementById('metricLowStock').textContent = MEDICINES.filter(m => m.status === 'Low Stock').length;
+  document.getElementById('metricPending').textContent = orders.filter(o => o.status === 'Pending').length;
+  document.getElementById('metricOrders').textContent = orders.length;
+  
+  // Inventory
+  const inventoryTable = document.getElementById('inventoryTable');
+  inventoryTable.innerHTML = '';
+  MEDICINES.forEach((med, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img src="medicine images/${med.image}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%23dbeefc%22/%3E%3C/svg%3E'"></td>
+      <td>${med.name}</td>
+      <td>${med.category}</td>
+      <td>₱${med.price.toFixed(2)}</td>
+      <td>${med.status}</td>
+      <td>${med.batch}</td>
+      <td>${med.expiry}</td>
+      <td><button class="btn alt" style="padding:0.3rem 0.8rem; font-size:0.85rem" onclick="removeMedicine(${idx})">Remove</button></td>
+    `;
+    inventoryTable.appendChild(tr);
+  });
+  
+  // All Orders
+  const allOrdersTable = document.getElementById('allOrdersTable');
+  allOrdersTable.innerHTML = '';
+  orders.forEach((order, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${order.customer}<br><small class="muted">${order.customerEmail || ''}</small></td>
+      <td>${order.items.map(i => i.name + ' x' + i.quantity).join('<br>')}</td>
+      <td>₱${order.total.toFixed(2)}</td>
+      <td>${order.type}</td>
+      <td>${order.type === 'Reserved' ? order.pickupDate + ' ' + order.pickupTime : order.date}</td>
+      <td>
+        <select onchange="updateOrderStatus(${idx}, this.value)">
+          <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+          <option value="Ready for Pickup" ${order.status === 'Ready for Pickup' ? 'selected' : ''}>Ready for Pickup</option>
+          <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
+          <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+        </select>
+      </td>
+      <td></td>
+    `;
+    allOrdersTable.appendChild(tr);
+  });
+  
+  // Requests
+  const requestedItemsList = document.getElementById('requestedItemsList');
+  requestedItemsList.innerHTML = '';
+  if (requests.length === 0) {
+    requestedItemsList.innerHTML = '<p class="muted">No requests yet.</p>';
+  } else {
+    requests.forEach(req => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.style.marginBottom = '0.5rem';
+      div.innerHTML = `
+        <strong>${req.medicine}</strong> - ${req.name} (${req.email})<br>
+        <span class="muted">${req.details}</span><br>
+        <small>${req.date} - ${req.status}</small>
+      `;
+      requestedItemsList.appendChild(div);
+    });
+  }
+  
+  // Ante Questions
+  const anteQuestionsList = document.getElementById('anteQuestionsList');
+  anteQuestionsList.innerHTML = '';
+  if (anteQuestions.length === 0) {
+    anteQuestionsList.innerHTML = '<p class="muted">No questions yet.</p>';
+  } else {
+    anteQuestions.slice(-20).reverse().forEach(q => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.style.marginBottom = '0.5rem';
+      div.innerHTML = `<strong>Q:</strong> ${q}<br>`;
+      anteQuestionsList.appendChild(div);
+    });
+  }
+}
+
+document.getElementById('addMedicineForm').onsubmit = (e) => {
+  e.preventDefault();
+  const name = document.getElementById('medName').value.trim();
+  const generic = document.getElementById('medGeneric').value.trim();
+  const category = document.getElementById('medCategoryAdd').value;
+  const strength = document.getElementById('medStrength').value.trim();
+  const form = document.getElementById('medForm').value.trim();
+  const price = parseFloat(document.getElementById('medPrice').value);
+  const status = document.getElementById('medStatusAdd').value;
+  const batch = document.getElementById('medBatch').value.trim();
+  const expiry = document.getElementById('medExpiry').value.trim();
+  const image = document.getElementById('medImage').value.trim() || 'biogesic.jpg';
+  
+  document.getElementById('addMedErr').textContent = '';
+  
+  if (!name || !generic || !category || !strength || !form || isNaN(price) || !batch || !expiry) {
+    document.getElementById('addMedErr').textContent = 'All fields are required';
+    return;
+  }
+  
+  MEDICINES.push({
+    id: Date.now(),
+    category,
+    name,
+    generic,
+    strength,
+    form,
+    price,
+    status,
+    batch,
+    expiry,
+    image
+  });
+  
+  document.getElementById('addMedicineForm').reset();
+  renderAdminDashboard();
+  renderMedicines();
+  alert('Medicine added successfully');
+};
+
+function removeMedicine(idx) {
+  if (confirm('Are you sure you want to remove this medicine?')) {
+    MEDICINES.splice(idx, 1);
+    renderAdminDashboard();
+    renderMedicines();
+  }
+}
+
+function updateOrderStatus(idx, status) {
+  orders[idx].status = status;
+  localStorage.setItem('pharmaOrders', JSON.stringify(orders));
+  renderAdminDashboard();
+}
+
+// Ante Chat
+const anteResponses = {
+  stock: (q) => {
+    const words = q.toLowerCase();
+    const found = MEDICINES.filter(m => words.includes(m.name.toLowerCase()) || words.includes(m.generic.toLowerCase().split(' ')[0]));
+    if (found.length > 0) {
+      return found.map(m => `${m.name}: ${m.status}, ₱${m.price.toFixed(2)}`).join('\n');
+    }
+    const inStock = MEDICINES.filter(m => m.status === 'In Stock').length;
+    const lowStock = MEDICINES.filter(m => m.status === 'Low Stock').length;
+    return `We have ${inStock} medicines in stock, ${lowStock} low stock items. Please tell me the specific medicine name.`;
+  },
+  hours: () => "Store Hours:\nMon-Sat: 8:00 AM - 8:00 PM\nSun: 9:00 AM - 5:00 PM",
+  price: (q) => {
+    const words = q.toLowerCase();
+    const found = MEDICINES.find(m => words.includes(m.name.toLowerCase()));
+    if (found) return `${found.name} costs ₱${found.price.toFixed(2)}`;
+    return "Please tell me the medicine name for pricing.";
+  },
+  reserve: () => "To reserve:\n1. Browse medicines and add to cart\n2. Go to Cart and click Reserve\n3. Enter pickup date and time\n4. Pick up at scheduled time",
+  prescription: () => "Antibacterial medicines (like antibiotics) require a prescription at pickup. Other medicines may not require one.",
+  emergency: () => "🚨 EMERGENCY WARNING 🚨\nThis sounds urgent. Please call your local emergency services or go to the nearest hospital immediately. Do not wait.",
+  default: () => "I can help with stock availability, prices, store hours, reservations, and prescriptions. I cannot give medical advice or dosing. How can I help you?"
+};
+
+document.getElementById('anteBtn').onclick = () => {
+  const chat = document.getElementById('anteChat');
+  const open = chat.classList.toggle('open');
+  document.getElementById('anteBtn').setAttribute('aria-expanded', open);
+  if (open && document.getElementById('chatMessages').children.length === 0) {
+    addChatMessage('ante', 'Hi! I\'m Ante, your virtual customer service. I can help with stock, prices, hours, reservations, and prescriptions. I don\'t provide medical advice. What can I help you with?');
+    addChatChips(['Check stock', 'Store hours', 'How to reserve', 'Prescriptions']);
+  }
+};
+
+document.getElementById('closeAnte').onclick = () => {
+  document.getElementById('anteChat').classList.remove('open');
+  document.getElementById('anteBtn').setAttribute('aria-expanded', 'false');
+};
+
+function addChatMessage(type, text) {
+  const messagesDiv = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `chat-message ${type}`;
+  div.textContent = text;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function addChatChips(chips) {
+  const chipsDiv = document.getElementById('chatChips');
+  chipsDiv.innerHTML = '';
+  chips.forEach(chip => {
+    const btn = document.createElement('button');
+    btn.className = 'chat-chip';
+    btn.textContent = chip;
+    btn.onclick = () => {
+      addChatMessage('user', chip);
+      processAnteQuery(chip);
+      chipsDiv.innerHTML = '';
+    };
+    chipsDiv.appendChild(btn);
+  });
+}
+
+document.getElementById('chatForm').onsubmit = (e) => {
+  e.preventDefault();
+  const input = document.getElementById('chatInput');
+  const query = input.value.trim();
+  if (!query) return;
+  addChatMessage('user', query);
+  input.value = '';
+  document.getElementById('chatChips').innerHTML = '';
+  processAnteQuery(query);
+};
+
+function processAnteQuery(query) {
+  const q = query.toLowerCase();
+  anteQuestions.push(query);
+  localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+  
+  // Check for emergency
+  if (q.includes('emergency') || q.includes('chest pain') || q.includes("can't breathe") || q.includes('overdose')) {
+    setTimeout(() => addChatMessage('ante', anteResponses.emergency()), 500);
+    return;
+  }
+  // Check for medical advice
+  if (q.includes('dose') || q.includes('dosage') || q.includes('side effect') || q.includes('take') && (q.includes('how many') || q.includes('safe'))) {
+    setTimeout(() => {
+      addChatMessage('ante', "I cannot give medical advice or dosing information. I can help with stock, prices, and store info. Please consult a pharmacist for medical questions.");
+      anteQuestions.push('[MEDICAL ADVICE BLOCKED] ' + query);
+      localStorage.setItem('pharmaAnteQuestions', JSON.stringify(anteQuestions));
+    }, 500);
+    return;
+  }
+  
+  if (q.includes('stock') || q.includes('available') || q.includes('have')) {
+    setTimeout(() => addChatMessage('ante', anteResponses.stock(query)), 500);
+  } else if (q.includes('hour') || q.includes('open') || q.includes('close')) {
+    setTimeout(() => addChatMessage('ante', anteResponses.hours()), 500);
+  } else if (q.includes('price') || q.includes('cost') || q.includes('how much')) {
+    setTimeout(() => addChatMessage('ante', anteResponses.price(query)), 500);
+  } else if (q.includes('reserve') || q.includes('how to')) {
+    setTimeout(() => addChatMessage('ante', anteResponses.reserve()), 500);
+  } else if (q.includes('prescription') || q.includes('rx')) {
+    setTimeout(() => addChatMessage('ante', anteResponses.prescription()), 500);
+  } else {
+    setTimeout(() => addChatMessage('ante', anteResponses.default()), 500);
+    // Pass unknown to team
+    console.log('Unknown question passed to team:', query);
+  }
+}
+
+// Initialize
+function init() {
+  initTheme();
+  updateCartBadge();
+  updateAuthUI();
+  navigateTo('landing');
+}
+
+init();
+</script>
+</body>
+</html>
